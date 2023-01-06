@@ -1,13 +1,12 @@
 //Present the prompts and store the answers to a variable
   //Create an array of prompt texts asking which characters they want
-  //Loop through the array prompting the user each time and save the response as boolean to another array
-  //If all booleans are false then alert user that they must pick something
+  //When user selects characters, add those to a combined array
+  //If combined array is empty, user must select again
   //Prompt the user for number of characters - Check if number of characters is outside 10-64 and if it is alert user
   
   
 //Generate the password
-  //Take the arrays for the character types the user has selected and combine into one array
-  //Randomly select the required number of characters from that array
+  //Randomly select the required number of characters from the combined array
     //For loop that runs for the password length and on each loop randomly generates a number and uses that to select a character from the array
     //Each selected character is appended onto a string held in another variable. Once the loop is done you have the generated password
 
@@ -18,17 +17,7 @@
 //Once password is generated and passed checks, display on screen for user
 
 
-var characterPromptOptions = [
-  'lowercase',
-  'uppercase',
-  'numeric',
-  'special'
-]
 
-  
-var characterSelections = [false,false,false,false]
-
-var allCharacters = []
 
 
 // Array of special characters to be included in password
@@ -122,34 +111,53 @@ var upperCasedCharacters = [
 ];
 
 var characterArrays = [
-  specialCharacters,
-  numericCharacters,
   lowerCasedCharacters,
-  upperCasedCharacters
+  upperCasedCharacters,
+  numericCharacters,
+  specialCharacters
 ]
+var characterPromptOptions = [
+  'lower case',
+  'upper case',
+  'numeric',
+  'special'
+]
+
+  
+var allCharacters = []
 
 // Function to prompt user for password options
 function getPasswordOptions() {
+  allCharacters = []
   for (i in characterPromptOptions){
-   var answer = prompt("Do you want to include " + i + "characters?");
-   characterSelections[i] = answer;
+    var answer = confirm("Do you want to include " + characterPromptOptions[i] + " characters?");
    if (answer === true){
-      allCharacters = allCharacters.concat(characterArrays[i])
+      allCharacters = allCharacters.concat(characterArrays[i]);
    }
   }
-  if (allCharacters.length === 0){alert("You need to pick at least one character type otherwise what am I going to put in the password?"); getPasswordOptions()}
+  if (allCharacters.length == 0){alert("You need to choose at least one character type otherwise what am I going to put in the password?"); getPasswordOptions()};
 }
+
+var passwordLength = 0
 
 // Function for setting length of password
 function getPasswordLength(){
-  var passwordLength = prompt("Enter a password length from 10 to 64")
-    if(typeOf(passwordLength) =! number){alert("Enter a number!");getPasswordLength()}
-    if(passwordLength < 10 || passwordLength > 64){"It's not complicated... The number must be between 10 and 64!";getPasswordLength()}
+  passwordLength = 0
+  passwordLength = parseInt(prompt("Enter a password length from 10 to 64"));
+    if(isNaN(passwordLength)){alert("Enter a number!");getPasswordLength()};
+    if(passwordLength < 10 || passwordLength > 64){alert("The number must be between 10 and 64!");getPasswordLength()};
 }
 
 // Function to generate password with user input
 function generatePassword() {
-
+    var password = "";
+    getPasswordOptions();
+    getPasswordLength();
+    for (let i = 0; i < passwordLength; i++){
+      randomPick = Math.floor(Math.random() * (allCharacters.length - 1)) + 0;
+      password += allCharacters[randomPick]
+    }
+return(password)
 }
 
 // Get references to the #generate element
@@ -159,9 +167,9 @@ var generateBtn = document.querySelector('#generate');
 function writePassword() {
   var password = generatePassword();
   var passwordText = document.querySelector('#password');
-
   passwordText.value = password;
 }
+
 
 // Add event listener to generate button
 generateBtn.addEventListener('click', writePassword);

@@ -134,10 +134,10 @@ function getPasswordOptions() {
    var answer = prompt("Do you want to include " + i + "characters?");
    characterSelections[i] = answer;
    if (answer === true){
-      characterSelections = characterSelections.concat(characterArrays[i])
+      allCharacters = allCharacters.concat(characterArrays[i])
    }
   }
-  if (characterSelections.length === 0){alert("You need to pick at least one character type otherwise what am I going to put in the password?"); getPasswordOptions()}
+  if (allCharacters.length === 0){alert("You need to pick at least one character type otherwise what am I going to put in the password?"); getPasswordOptions()}
 }
 
 // Function for setting length of password

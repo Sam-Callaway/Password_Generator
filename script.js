@@ -1,25 +1,3 @@
-//Present the prompts and store the answers to a variable
-  //Create an array of prompt texts asking which characters they want
-  //When user selects characters, add those to a combined array
-  //If combined array is empty, user must select again
-  //Prompt the user for number of characters - Check if number of characters is outside 10-64 and if it is alert user
-  
-  
-//Generate the password
-  //Randomly select the required number of characters from the combined array
-    //For loop that runs for the password length and on each loop randomly generates a number and uses that to select a character from the array
-    //Each selected character is appended onto a string held in another variable. Once the loop is done you have the generated password
-
-//Check that the password has the correct characters
-  //Run through the string with a find() to see if a character from each of the selected types is in there
-  //If one of the finds returns null/undeclared then redo generate password step
-
-//Once password is generated and passed checks, display on screen for user
-
-
-
-
-
 // Array of special characters to be included in password
 var specialCharacters = [
   '@',
@@ -122,23 +100,31 @@ var characterPromptOptions = [
   'numeric',
   'special'
 ]
+var characterSelections =[
+  false,false,false,false
+]
 
   
 var allCharacters = []
 
+
 // Function to prompt user for password options
 function getPasswordOptions() {
+  characterSelections =[false,false,false,false]
   allCharacters = []
   for (i in characterPromptOptions){
     var answer = confirm("Do you want to include " + characterPromptOptions[i] + " characters?");
    if (answer === true){
       allCharacters = allCharacters.concat(characterArrays[i]);
+      characterSelections[i] = true
    }
   }
-  if (allCharacters.length == 0){alert("You need to choose at least one character type otherwise what am I going to put in the password?"); getPasswordOptions()};
+  if (allCharacters.length == 0){alert("You need to choose at least one character type"); getPasswordOptions()};
 }
 
+var password = "";
 var passwordLength = 0
+
 
 // Function for setting length of password
 function getPasswordLength(){
@@ -150,13 +136,14 @@ function getPasswordLength(){
 
 // Function to generate password with user input
 function generatePassword() {
-    var password = "";
-    getPasswordOptions();
-    getPasswordLength();
+  console.log("Generating new password")
+  password = "";
     for (let i = 0; i < passwordLength; i++){
-      randomPick = Math.floor(Math.random() * (allCharacters.length - 1)) + 0;
+      randomPick = Math.floor(Math.random() * (allCharacters.length)) + 0;
       password += allCharacters[randomPick]
     }
+  console.log("Generated password is " + password)
+  if(checkPassword(password) === false){console.log("Generated password failed test");generatePassword();}
 return(password)
 }
 
@@ -165,10 +152,27 @@ var generateBtn = document.querySelector('#generate');
 
 // Write password to the #password input
 function writePassword() {
-  var password = generatePassword();
+  getPasswordOptions();
+  getPasswordLength();
+  generatePassword();
   var passwordText = document.querySelector('#password');
   passwordText.value = password;
 }
+
+// Check that the generated password is suitable
+function checkPassword(password){
+  acceptable = true
+  for (i in characterSelections){
+    if (characterSelections[i] === true){
+        console.log("Checking that password includes " + characterPromptOptions[i] + " character")
+        var stringIncludesChar = characterArrays[i].some(x => password.includes(x));
+        if (stringIncludesChar === false){acceptable = false; console.log("Character type missing")}
+
+      }
+    }
+  return(acceptable)
+  }
+
 
 
 // Add event listener to generate button
